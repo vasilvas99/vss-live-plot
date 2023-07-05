@@ -32,11 +32,11 @@ def animate(
     list_len,
     initial_time=0,
 ):
-    temp_c = read_datapoint(datapoint_path, databroker_host, databroker_port)
+    datapoint_val = read_datapoint(datapoint_path, databroker_host, databroker_port)
 
     # Add x and y to lists
     xs.append(monotonic() - initial_time)
-    ys.append(temp_c)
+    ys.append(datapoint_val)
 
     # Limit x and y lists to list_len items
     xs = xs[-list_len:]
