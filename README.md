@@ -44,5 +44,5 @@ options:
   -u PLOT_UPDATE_MS, --plot-update-ms PLOT_UPDATE_MS
                         Interval at which the plot is updated (ms) [DEFAULT: 200]
   -q PLOT_QUEUE_LENGTH, --plot-queue-length PLOT_QUEUE_LENGTH
-                        Number of points plotted at a time (history length) [DEFAULT: 20]
+                        Number of points plotted at a time (history length) [DEFAULT: 200]
 ```

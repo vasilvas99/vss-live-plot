@@ -76,8 +76,8 @@ def cli(cli_args=None):
         "-q",
         "--plot-queue-length",
         type=int,
-        default=20,
-        help="Number of points plotted at a time (history length) [DEFAULT: 20]",
+        default=200,
+        help="Number of points plotted at a time (history length) [DEFAULT: 200]",
     )
     return parser.parse_args(cli_args)
 
