@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-from time import monotonic
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from kuksa_client.grpc import VSSClient, VSSClientError
-from kuksa_client.grpc import Datapoint
-from urllib.parse import urlparse
-import os
 import argparse
+import os
+from collections import deque
+from time import monotonic
+from urllib.parse import urlparse
+
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+from kuksa_client.grpc import Datapoint, VSSClient, VSSClientError
 
 
 def read_datapoint(datapoint_path, databroker_host, databroker_port):
@@ -21,35 +22,30 @@ def read_datapoint(datapoint_path, databroker_host, databroker_port):
 
 
 # This function is called periodically from FuncAnimation
-def animate(
+def draw_plot_frame(
     i,
     ax,
-    xs,
+    ts,
     ys,
     datapoint_path,
     databroker_host,
     databroker_port,
-    list_len,
     initial_time=0,
 ):
     datapoint_val = read_datapoint(datapoint_path, databroker_host, databroker_port)
 
-    # Add x and y to lists
-    xs.append(monotonic() - initial_time)
+    ts.append(monotonic() - initial_time)
     ys.append(datapoint_val)
 
-    # Limit x and y lists to list_len items
-    xs = xs[-list_len:]
-    ys = ys[-list_len:]
-
-    # Draw x and y lists
+    # Draw t and y lists
     ax.clear()
-    ax.plot(xs, ys)
+    ax.plot(ts, ys)
 
     # Format plot
     plt.title(f"Live plot of {datapoint_path}")
     plt.ylabel("Datapoint Value")
     plt.xlabel("Time (s)")
+
 
 def cli(cli_args=None):
     parser = argparse.ArgumentParser(
@@ -90,21 +86,20 @@ def main(cli_args=None):
     # Create figure for plotting
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    xs = []
-    ys = []
+    ts = deque(maxlen=conf.plot_queue_length)
+    ys = deque(maxlen=conf.plot_queue_length)
 
     # Setup the function that generates frames
     ani = animation.FuncAnimation(
         fig,
-        animate,
+        draw_plot_frame,
         fargs=(
             ax,
-            xs,
+            ts,
             ys,
             conf.VSS_PATH,
             databroker_url.hostname,
             databroker_url.port,
-            conf.plot_queue_length,
             initial_time,
         ),
         interval=conf.plot_update_ms,
