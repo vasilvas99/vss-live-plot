@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
-from kuksa_client.grpc import Datapoint, VSSClient, VSSClientError
+from kuksa_client.grpc import VSSClient
 
 
 def read_datapoint(datapoint_path, databroker_host, databroker_port):
