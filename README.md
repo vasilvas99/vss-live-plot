@@ -52,7 +52,7 @@ options:
 ## Time
 
 The time on the plot is based on the Python monotonic clock of the client running the vss-live-plotter, with t = 0 being
-the moment of the tool startup. This means that only time differences should be taken into account with the absolution values
+the moment of the tool startup. This means that only time differences should be taken into account with the absolute values
 being unrelated to the time of "production" of the monitored value.
 
 ## Connecting to remote devices
