@@ -87,7 +87,7 @@ def main(cli_args=None):
     ts = deque(maxlen=conf.plot_queue_length)
     ys = deque(maxlen=conf.plot_queue_length)
 
-    # Setup the function the animation
+    # Setup the animation
     ani = animation.FuncAnimation(
         fig,
         draw_plot_frame,
