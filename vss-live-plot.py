@@ -21,7 +21,6 @@ def read_datapoint(datapoint_path, databroker_host, databroker_port):
         return 0
 
 
-# This function is called periodically from FuncAnimation
 def draw_plot_frame(
     i,
     ax,
@@ -83,13 +82,12 @@ def main(cli_args=None):
     databroker_url = urlparse(f"//{conf.databroker_address}/")
     initial_time = monotonic()
 
-    # Create figure for plotting
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     ts = deque(maxlen=conf.plot_queue_length)
     ys = deque(maxlen=conf.plot_queue_length)
 
-    # Setup the function that generates frames
+    # Setup the function the animation
     ani = animation.FuncAnimation(
         fig,
         draw_plot_frame,
