@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
 
 import argparse
-import os
 from collections import deque
 from time import monotonic
 from urllib.parse import urlparse
 
-import matplotlib.animation as animation
+from matplotlib import animation
 import matplotlib.pyplot as plt
 from kuksa_client.grpc import VSSClient
 
 
-def read_datapoint(datapoint_path, databroker_host, databroker_port):
-    with VSSClient(databroker_host, databroker_port) as kuksa_client:
+def read_datapoint(datapoint_path, databroker_url):
+    with VSSClient(databroker_url.hostname, databroker_url.port) as kuksa_client:
         kuksa_response = kuksa_client.get_current_values([datapoint_path])
 
     if kuksa_response[datapoint_path]:
         return kuksa_response[datapoint_path].value
-    else:
-        return 0
+
+    # Plot invalid/missing values as zeroes to keep the
+    # animation going
+    return 0
 
 
 def draw_plot_frame(
@@ -27,11 +28,10 @@ def draw_plot_frame(
     ts,
     ys,
     datapoint_path,
-    databroker_host,
-    databroker_port,
+    databroker_url,
     initial_time=0,
 ):
-    datapoint_val = read_datapoint(datapoint_path, databroker_host, databroker_port)
+    datapoint_val = read_datapoint(datapoint_path, databroker_url)
 
     ts.append(monotonic() - initial_time)
     ys.append(datapoint_val)
@@ -82,13 +82,13 @@ def main(cli_args=None):
     databroker_url = urlparse(f"//{conf.databroker_address}/")
     initial_time = monotonic()
 
-    fig = plt.figure()
+    fig = plt.figure("VSS Signal Live Plot")
     ax = fig.add_subplot(1, 1, 1)
     ts = deque(maxlen=conf.plot_queue_length)
     ys = deque(maxlen=conf.plot_queue_length)
 
     # Setup the animation
-    ani = animation.FuncAnimation(
+    _ = animation.FuncAnimation(
         fig,
         draw_plot_frame,
         fargs=(
@@ -96,8 +96,7 @@ def main(cli_args=None):
             ts,
             ys,
             conf.VSS_PATH,
-            databroker_url.hostname,
-            databroker_url.port,
+            databroker_url,
             initial_time,
         ),
         interval=conf.plot_update_ms,
