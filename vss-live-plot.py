@@ -23,22 +23,22 @@ def read_datapoint(datapoint_path, databroker_url):
 
 
 def draw_plot_frame(
-    i,
+    _,
     ax,
-    ts,
-    ys,
+    t_data,
+    y_data,
     datapoint_path,
     databroker_url,
     initial_time=0,
 ):
     datapoint_val = read_datapoint(datapoint_path, databroker_url)
 
-    ts.append(monotonic() - initial_time)
-    ys.append(datapoint_val)
+    t_data.append(monotonic() - initial_time)
+    y_data.append(datapoint_val)
 
     # Draw t and y lists
     ax.clear()
-    ax.plot(ts, ys)
+    ax.plot(t_data, y_data)
 
     # Format plot
     plt.title(f"Live plot of {datapoint_path}")
@@ -84,8 +84,8 @@ def main(cli_args=None):
 
     fig = plt.figure("VSS Signal Live Plot")
     ax = fig.add_subplot(1, 1, 1)
-    ts = deque(maxlen=conf.plot_queue_length)
-    ys = deque(maxlen=conf.plot_queue_length)
+    t_points = deque(maxlen=conf.plot_queue_length)
+    y_points = deque(maxlen=conf.plot_queue_length)
 
     # Setup the animation
     _ = animation.FuncAnimation(
@@ -93,8 +93,8 @@ def main(cli_args=None):
         draw_plot_frame,
         fargs=(
             ax,
-            ts,
-            ys,
+            t_points,
+            y_points,
             conf.VSS_PATH,
             databroker_url,
             initial_time,
