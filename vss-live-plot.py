@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 
 import argparse
+import logging
+import os
 from collections import deque
 from time import monotonic
 from urllib.parse import urlparse
 
-from matplotlib import animation
 import matplotlib.pyplot as plt
-from kuksa_client.grpc import VSSClient
+from kuksa_client.grpc import VSSClient, VSSClientError
+from matplotlib import animation
+from retry import retry
 
+logger = logging.getLogger("Live Plot")
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
+logging.basicConfig(level=logging.INFO)
 
+@retry(VSSClientError, backoff=2, logger=logger)
 def read_datapoint(datapoint_path, databroker_url):
     with VSSClient(databroker_url.hostname, databroker_url.port) as kuksa_client:
         kuksa_response = kuksa_client.get_current_values([datapoint_path])
