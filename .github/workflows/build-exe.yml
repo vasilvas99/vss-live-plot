@@ -7,14 +7,14 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-windows:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Package Application
+    - name: Package Application Windows
       uses: JackMcKew/pyinstaller-action-windows@python3-10-pyinstaller-5-3
       with:
         path: ./
@@ -22,4 +22,22 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: vss-live-plot
-        path: src/dist/windows
+        path: ./dist/windows
+        if-no-files-found: error
+        
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Package Application Linux
+      uses: JackMcKew/pyinstaller-action-linux@python3.10
+      with:
+        path: ./
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: vss-live-plot
+        path: ./dist/linux
+        if-no-files-found: error
