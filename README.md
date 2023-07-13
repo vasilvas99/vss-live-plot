@@ -61,7 +61,18 @@ Since vss-live-plotter uses the Python Kuksa Client directly, if the user wishes
 they can use for example port forwarding, ssh tunnels, etc. and just change the default Databroker address with the `-d` option.
 
 For example the Leda Distro Quickstart Image (QEMUx86-64) by default forwards the guest's port 55555 traffic to port 30555 on the host. Thus on the host (that has a GUI) you can run:
-
 ```shell
 vss-live-plot.py <VSS_DATAPOINT_PATH> -d 127.0.0.1:30555
 ```
+
+# Nightly builds
+
+Pre-built nightly binaries (with pyinstaller) can be downloaded for both Linux and Windows. Keep in mind that those are artifacts from the last successful pipeline run and might be broken.
+
+## Linux
+
+[vss-live-plot](https://nightly.link/vasilvas99/vss-live-plot/workflows/build-exe/main/vss-live-plot.zip)
+
+## Windows
+
+[vss-live-plot.exe](https://nightly.link/vasilvas99/vss-live-plot/workflows/build-exe/main/vss-live-plot.exe.zip)
