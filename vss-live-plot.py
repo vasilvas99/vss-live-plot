@@ -16,7 +16,7 @@ logger = logging.getLogger("Live Plot")
 logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 logging.basicConfig(level=logging.INFO)
 
-@retry(VSSClientError, backoff=4, logger=logger)
+@retry(VSSClientError, delay=1, backoff=2, max_delay=60, logger=logger)
 def read_datapoint(datapoint_path, databroker_url):
     with VSSClient(databroker_url.hostname, databroker_url.port) as kuksa_client:
         kuksa_response = kuksa_client.get_current_values([datapoint_path])
